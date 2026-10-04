@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request IT Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text: #f0f0f0;
+      --muted: #666;
+      --accent: #e8ff4d;
+      --error: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+    .card {
+      width: min(760px, 100%);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .eyebrow {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    h1 {
+      margin: 0 0 1rem;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+    h1 em { color: var(--accent); font-style: normal; }
+    p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin: 0 0 1.5rem;
+    }
+
+    /* services */
+    .label {
+      display: block;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .services {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+    .service { position: relative; }
+    .service input {
+      position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%;
+      margin: 0; cursor: pointer;
+    }
+    .service span {
+      display: block; padding: 12px 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted); font-size: 13px; line-height: 1.5;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .service:hover span { border-color: var(--border2); color: var(--text); }
+    .service input:checked + span {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(232,255,77,0.06);
+    }
+    .service input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* fields */
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { margin-bottom: 1.25rem; }
+    input[type=text], input[type=tel], input[type=email], textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: 'DM Mono', monospace; font-size: 13px;
+      border-radius: 0;
+      transition: border-color 0.2s;
+    }
+    textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+    input::placeholder, textarea::placeholder { color: var(--muted); }
+    input[type=text]:focus, input[type=tel]:focus, input[type=email]:focus, textarea:focus {
+      outline: none; border-color: var(--accent);
+    }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    /* actions */
+    .actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; align-items: center; }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer;
+      border: 1px solid var(--border2);
+      background: transparent; color: var(--text);
+      transition: all 0.2s ease;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-fill { background: var(--accent); color: #000; border-color: var(--accent); }
+    .btn-fill:hover { background: transparent; color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: wait; }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .status { margin: 1.25rem 0 0; font-size: 13px; min-height: 1.5em; }
+    .status.error { color: var(--error); }
+    .status.ok { color: var(--accent); }
+
+    .success { display: none; }
+    .success h2 {
+      font-family: 'Syne', sans-serif; font-size: 28px; margin: 0 0 1rem;
+      letter-spacing: -0.02em;
+    }
+    .card.sent form { display: none; }
+    .card.sent .success { display: block; }
+
+    .fallback { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); margin-bottom: 0; }
+    .fallback a { color: var(--text); }
+    .fallback a:hover { color: var(--accent); }
+
+    @media (max-width: 560px) {
+      .card { padding: 1.5rem; }
+      .services, .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" id="card">
+    <div class="eyebrow">IT Support / Service Request</div>
+    <h1>Need computer repair or technical support?<em>.</em></h1>
+    <p>
+      I can help with PC repair, hardware setup, network issues, troubleshooting, and general IT support for homes and small businesses. Fill in the form and I'll get back to you.
+    </p>
+
+    <form id="requestForm" novalidate>
+      <span class="label" id="serviceLabel">What do you need help with?</span>
+      <div class="services" role="radiogroup" aria-labelledby="serviceLabel">
+        <label class="service">
+          <input type="radio" name="service" value="Hardware and PC repair / Cleaning" checked>
+          <span>Hardware and PC repair / Cleaning</span>
+        </label>
+        <label class="service">
+          <input type="radio" name="service" value="IT support and troubleshooting">
+          <span>IT support and troubleshooting</span>
+        </label>
+        <label class="service">
+          <input type="radio" name="service" value="Network and system setup">
+          <span>Network and system setup</span>
+        </label>
+        <label class="service">
+          <input type="radio" name="service" value="Small business technical assistance">
+          <span>Small business technical assistance</span>
+        </label>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label class="label" for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" maxlength="100" required>
+        </div>
+        <div class="field">
+          <label class="label" for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" placeholder="+353 ..." autocomplete="tel" maxlength="30" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="email">Email (optional)</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" maxlength="100">
+      </div>
+
+      <div class="field">
+        <label class="label" for="message">Describe the problem</label>
+        <textarea id="message" name="message" placeholder="e.g. Laptop won't turn on, Wi-Fi keeps dropping..." maxlength="1000"></textarea>
+      </div>
+
+      <!-- honeypot: humans never see this -->
+      <div class="hp" aria-hidden="true">
+        <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-fill" type="submit" id="submitBtn">Send Request</button>
+        <a class="btn" href="portfolio.html">Back to Portfolio</a>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="success" id="success">
+      <h2>Request sent.</h2>
+      <p>Thanks! I'll contact you as soon as possible using the phone number or email you provided.</p>
+      <div class="actions">
+        <a class="btn btn-fill" href="portfolio.html">Back to Portfolio</a>
+        <button class="btn" type="button" id="againBtn">Send another request</button>
+      </div>
+    </div>
+
+    <p class="fallback">
+      Prefer email? Write to <a href="mailto:bilguudeibibi4@gmail.com?subject=Service%20Request%20for%20IT%20Support">bilguudeibibi4@gmail.com</a>
+    </p>
+  </main>
+
+  <script>
+    const card = document.getElementById('card');
+    const form = document.getElementById('requestForm');
+    const statusEl = document.getElementById('status');
+    const btn = document.getElementById('submitBtn');
+
+    // Allow pre-selecting a service from a link: service-request.html?service=Network
+    const preset = new URLSearchParams(location.search).get('service');
+    if (preset) {
+      const match = [...form.querySelectorAll('input[name=service]')]
+        .find(r => r.value.toLowerCase().includes(preset.toLowerCase()));
+      if (match) match.checked = true;
+    }
+
+    function setStatus(text, type) {
+      statusEl.textContent = text;
+      statusEl.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+
+      if (!data.name.trim() || !data.phone.trim()) {
+        setStatus('Please enter your name and phone number.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('Sending...');
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Request failed');
+        form.reset();
+        setStatus('');
+        card.classList.add('sent');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        setStatus('Could not send the request. Please try again or email me directly.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('againBtn').addEventListener('click', () => {
+      card.classList.remove('sent');
+    });
+  </script>
+</body>
+</html>
