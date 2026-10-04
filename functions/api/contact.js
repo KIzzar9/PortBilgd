@@ -26,10 +26,12 @@ export async function onRequestPost({ request, env }) {
     return new Response("Name and phone are required", { status: 400 });
   }
 
-  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
-    return new Response("Server is not configured", { status: 500 });
+   if (!env.TELEGRAM_BOT_TOKEN) {
+    return new Response("Missing TELEGRAM_BOT_TOKEN", { status: 500 });
   }
-
+  if (!env.TELEGRAM_CHAT_ID) {
+    return new Response("Missing TELEGRAM_CHAT_ID", { status: 500 });
+  }
   const text =
     `🔔 Шинэ хүсэлт\n\n` +
     `Үйлчилгээ: ${service || "-"}\n` +
