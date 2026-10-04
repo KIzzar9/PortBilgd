@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — IT Hardware Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f0;
+    --muted: #666;
+    --muted2: #444;
+    --accent: #e8ff4d;
+    --accent2: rgba(232,255,77,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    cursor: none;
+  }
+
+  /* custom cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(232,255,77,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2.5rem; }
+  .nav-links a {
+    color: var(--muted); font-size: 12px;
+    text-decoration: none; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted);
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: #4ade80; border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* SECTIONS */
+  section { padding: 7rem 3rem; border-bottom: 1px solid var(--border); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding-top: 8rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid-line {
+    position: absolute;
+    background: var(--border);
+    pointer-events: none;
+  }
+  .hero-grid-line.v { width: 1px; top: 0; bottom: 0; }
+  .hero-grid-line.h { height: 1px; left: 0; right: 0; }
+
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 2.5rem;
+    font-size: 11px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--accent);
+  }
+  .hero-eyebrow span { color: var(--accent); }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+
+  .hero-sub {
+    max-width: 520px;
+    font-size: 14px; color: var(--muted);
+    line-height: 1.8; margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+  .btn {
+    padding: 12px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border2);
+    background: transparent; color: var(--text);
+    text-decoration: none; cursor: none;
+    transition: all 0.2s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-fill {
+    background: var(--accent); color: #000;
+    border-color: var(--accent);
+  }
+  .btn-fill:hover { background: transparent; color: var(--accent); }
+
+  .hero-counter {
+    position: absolute; bottom: 3rem; right: 3rem;
+    font-size: 11px; color: var(--muted2);
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl; text-orientation: mixed;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ABOUT */
+  #about { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  .section-num {
+    font-size: 11px; color: var(--muted2);
+    letter-spacing: 0.15em; margin-bottom: 1.5rem;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 700;
+    letter-spacing: -0.01em; margin-bottom: 2rem;
+  }
+  .about-text p { color: var(--muted); line-height: 1.9; margin-bottom: 1rem; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .stat {
+    background: var(--bg); padding: 1.5rem;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+
+  /* SKILLS */
+  #skills .skills-header { margin-bottom: 3rem; }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .skill-block {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .skill-block:hover { background: var(--bg3); }
+  .skill-icon { font-size: 20px; margin-bottom: 1rem; }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .skill-items { display: flex; flex-direction: column; gap: 4px; }
+  .skill-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted);
+  }
+  .skill-item::before {
+    content: ''; display: block;
+    width: 4px; height: 4px;
+    background: var(--accent); border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* EXPERIENCE */
+  #experience .exp-list { margin-top: 3rem; }
+  .exp-item {
+    display: grid; grid-template-columns: 180px 1fr;
+    gap: 3rem; padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .exp-item:hover .exp-main { padding-left: 8px; }
+  .exp-meta { padding-top: 4px; }
+  .exp-date { font-size: 11px; color: var(--muted2); letter-spacing: 0.08em; margin-bottom: 8px; }
+  .exp-company { font-size: 12px; color: var(--muted); }
+  .exp-main { transition: padding 0.2s; }
+  .exp-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .exp-desc { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
+  .exp-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .exp-tag {
+    font-size: 10px; letter-spacing: 0.1em;
+    padding: 4px 12px; border: 1px solid var(--border2);
+    color: var(--muted); text-transform: uppercase;
+  }
+
+  /* CONTACT */
+  #contact { text-align: center; padding: 8rem 3rem; }
+  #contact h2 { font-size: clamp(36px, 6vw, 72px); margin-bottom: 1rem; }
+  #contact p { color: var(--muted); margin-bottom: 3rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border: 1px solid var(--border2);
+    color: var(--muted); font-size: 12px; letter-spacing: 0.08em;
+    text-decoration: none; text-transform: uppercase;
+    cursor: none; transition: all 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+  .contact-link svg { width: 14px; height: 14px; }
+  .service-cta {
+    margin-top: 1.5rem; display: flex; justify-content: center; align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--muted2);
+    letter-spacing: 0.08em;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-line {
+    position: fixed; top: 0; left: 0;
+    height: 2px; background: var(--accent);
+    z-index: 999; width: 0%;
+    transition: width 0.1s;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="scroll-line" id="scrollLine"></div>
+
+<nav>
+  <div class="nav-logo">T<span>.</span>N</div>
+  <div class="nav-links">
+    <a href="#about">About Me</Menu></a>
+    <a href="#skills">My Skills</a>
+    <a href="#experience">Experiences</a>
+    <a href="#contact">Contacts</a>
+  </div>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    I’d be happy to work with you.
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid-line v" style="left: 33.33%"></div>
+  <div class="hero-grid-line v" style="left: 66.66%"></div>
+  <div class="hero-grid-line h" style="top: 40%"></div>
+
+  <div class="hero-eyebrow">
+    <span>IT Hardware Engineer</span>
+    — Dublin, Ireland
+  </div>
+  <h1>System<br>Administrator<br><em>Engineer.</em></h1>
+  <p class="hero-sub">
+    Specializing in hardware and IT infrastructure management, ensuring reliable operation. Holds a CS bachelor's degree.
+  </p>
+  <div class="hero-cta">
+    <a class="btn btn-fill" href="#contact">Get In Touch</a>
+    <a class="btn" href="#experience">View Experiences</a>
+  </div>
+
+  <div class="hero-counter">© 2026 &nbsp;—&nbsp; v1.0</div>
+</section>
+
+<section id="about">
+  <div class="about-text">
+    <div class="section-num">01 / About Me </div>
+    <h2>Technical<br>Operations<br>Engineer</h2>
+    <p>Hi, I’m Bilguudei. B, IT professional with 10 years of industry experience and a Bachelor’s degree in Computer Science, with a strong focus on hardware, IT infrastructure, servers, and networking. Developed extensive hands-on experience in server and network installation, rack setup, hardware maintenance, troubleshooting, and IT infrastructure support.</p>
+    <p>My career began with a strong interest in computer hardware and technical problem-solving. During my university years, I gained practical experience in computer repair, custom PC assembly, processor upgrades, hardware maintenance, software installation, and troubleshooting. Over the years, I have expanded this foundation into professional IT infrastructure and technology operations, with a focus on maintaining reliable and efficient IT environments.</p>
+  </div>
+  <div>
+    <div class="about-stats">
+      <div class="stat">
+        <div class="stat-num">7+</div>
+        <div class="stat-label">Years of Experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">300+</div>
+        <div class="stat-label">Devices Repaired</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">CS</div>
+        <div class="stat-label">Bachelor's Degree</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Problems Solved</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="skills-header">
+    <div class="section-num">02 / My Skills</div>
+    <h2>What I Do</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-block">
+      <div class="skill-icon">🖥</div>
+      <div class="skill-name">Hardware</div>
+      <div class="skill-items">
+        <div class="skill-item">Server installation</div>
+        <div class="skill-item">Rack & cabling</div>
+        <div class="skill-item">PC build & repair, Cleaning</div>
+        <div class="skill-item">Printer & peripheral</div>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-name">Network</div>
+      <div class="skill-items">
+        <div class="skill-item">Cisco switch/router</div>
+        <div class="skill-item">LAN / WAN</div>
+        <div class="skill-item">VPN configuration</div>
+        <div class="skill-item">Firewall</div>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-name">System</div>
+      <div class="skill-items">
+        <div class="skill-item">Windows Server</div>
+        <div class="skill-item">Linux (Ubuntu)</div>
+        <div class="skill-item">Active Directory</div>
+        <div class="skill-item">DHCP / DNS</div>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-icon">🛡</div>
+      <div class="skill-name">Security</div>
+      <div class="skill-items">
+        <div class="skill-item">Access control</div>
+        <div class="skill-item">Backup & recovery</div>
+        <div class="skill-item">CCTV system</div>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-icon">🔧</div>
+      <div class="skill-name">Support</div>
+      <div class="skill-items">
+        <div class="skill-item">Helpdesk / L1–L2</div>
+        <div class="skill-item">Remote support</div>
+        <div class="skill-item">Asset management</div>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-icon">💻</div>
+      <div class="skill-name">Software</div>
+      <div class="skill-items">
+        <div class="skill-item">Python (Foundation)</div>
+        <div class="skill-item">Bash / PowerShell</div>
+        <div class="skill-item">MS Office 365</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="section-num">03 / Experiences</div>
+  <h2>Where I've Worked</h2>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2025 — 2026</div>
+        <div class="exp-company">E-mart Mongolia</div>
+      </div>
+      <div class="exp-main">
+        <div class="exp-title">Senior Technology Operations Engineer</div>
+        <div class="exp-desc">Install, configure, and maintain the organization’s IT equipment, computers, and infrastructure. Manage network equipment and ensure the reliable operation of the organization’s IT systems.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Server</span>
+          <span class="exp-tag">Cisco</span>
+          <span class="exp-tag">Rack</span>
+          <span class="exp-tag">Windows Server</span>
+        </div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2023 — 2025</div>
+        <div class="exp-company">E-mart Mongolia</div>
+      </div>
+      <div class="exp-main">
+        <div class="exp-title">Technology Operations Engineer</div>
+        <div class="exp-desc">Computer, printer and other equipment repair. Providing technical support to users. Resolving network issues.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Helpdesk</span>
+          <span class="exp-tag">Hardware</span>
+          <span class="exp-tag">Network</span>
+        </div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2019 — 2023</div>
+        <div class="exp-company">National University of Mongolia</div>
+      </div>
+      <div class="exp-main">
+        <div class="exp-title">Computer Science Bachelor</div>
+        <div class="exp-desc">Computer Science Bachelor. Programming, algorithms, information systems, networking fundamentals.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">CSS,HTML & JS</span>
+          <span class="exp-tag">Algorithms</span>
+          <span class="exp-tag">Networking</span>
+        </div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2016 — 2019</div>
+        <div class="exp-company">Univesity of the Humanities</div>
+      </div>
+      <div class="exp-main">
+        <div class="exp-title">Marketing Bachelor</div>
+        <div class="exp-desc">Retail Marketing.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Marketing</span>
+          <span class="exp-tag">Sales</span>
+          <span class="exp-tag">Customer Service</span>
+        </div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2026 — Now</div>
+        <div class="exp-company">U-Learn English School Dublin</div>
+      </div>
+      <div class="exp-main">
+        <div class="exp-title">English Language School Student</div>
+        <div class="exp-desc">Learning English and improving language skills.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">English</span>
+          <span class="exp-tag">Communication</span>
+          <span class="exp-tag">C1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-num" style="text-align:center; margin-bottom: 1rem;">04 / Contact</div>
+  <h2>Get In Touch<em style="color:var(--accent)">.</em></h2>
+  <p>I'm currently looking for new opportunities, feel free to reach out!</p>
+  <div class="contact-links">
+    <a class="contact-link" href="mailto:bilguudeibibi4@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+      bilguudeibibi4@gmail.com
+    </a>
+    <a class="contact-link" href="https://www.linkedin.com/in/bilguudei-bayarmagnai-3760433b3/" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+    <a class="contact-link" href="https://instagram.com" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1.3" fill="currentColor" stroke="none"/>
+      </svg>
+      Instagram
+    </a>
+    <a class="contact-link" href="tel:083 849 2109">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.48 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      +353 83 849 2109
+    </a>
+  </div>
+  <div class="service-cta">
+    <a class="btn btn-fill" href="service-request.html" style="display:inline-block">Request Service →</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Bilguudei</span>
+  <span>UB, MONGOLIA / DUBLIN, IRELAND</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); }
+  animRing();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = 'var(--accent)'; });
+    el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(232,255,77,0.4)'; });
+  });
+
+  const scrollLine = document.getElementById('scrollLine');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    scrollLine.style.width = pct + '%';
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.exp-item, .skill-block, .stat').forEach(el => {
+    el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
